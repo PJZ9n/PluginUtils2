@@ -27,6 +27,7 @@ use PJZ9n\PluginUtils2\Utils\Json;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
 use pocketmine\utils\Utils;
+use Throwable;
 
 class GetLatestReleaseTask extends AsyncTask
 {
@@ -58,13 +59,17 @@ class GetLatestReleaseTask extends AsyncTask
     
     public function onRun()
     {
-        $ch = curl_init($this->url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => $this->userAgent,
-        ]);
-        $this->setResult(curl_exec($ch));
-        curl_close($ch);
+        try {
+            $ch = curl_init($this->url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERAGENT => $this->userAgent,
+            ]);
+            $this->setResult(curl_exec($ch));
+            curl_close($ch);
+        } catch (Throwable $throwable) {
+            $this->setResult($throwable);
+        }
     }
     
     public function onCompletion(Server $server)
