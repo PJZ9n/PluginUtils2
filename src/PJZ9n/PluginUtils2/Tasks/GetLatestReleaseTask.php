@@ -37,9 +37,6 @@ class GetLatestReleaseTask extends AsyncTask
     /** @var string */
     private $userAgent;
     
-    /** @var callable */
-    private $callback;
-    
     /**
      * @param string $url Ex: https://api.github.com/repos/author/repo/releases/latest
      * @param string $userAgent
