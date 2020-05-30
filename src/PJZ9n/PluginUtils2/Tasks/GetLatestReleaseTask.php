@@ -54,7 +54,9 @@ class GetLatestReleaseTask extends AsyncTask
         $this->userAgent = $userAgent;
         Utils::validateCallableSignature(function (?array $releaseData): void {
         }, $callback);
-        $this->callback = $callback;
+        $this->storeLocal([
+            "callback" => $callback,
+        ]);
     }
     
     public function onRun()
@@ -74,15 +76,17 @@ class GetLatestReleaseTask extends AsyncTask
     
     public function onCompletion(Server $server)
     {
+        $local = $this->fetchLocal();
+        $callback = $local["callback"];
         $result = $this->getResult();
         if (!is_string($result)) {
-            ($this->callback)(null);
+            ($callback)(null);
             return;
         }
         if (!Json::isValid($result)) {
-            ($this->callback)(null);
+            ($callback)(null);
             return;
         }
-        ($this->callback)(json_decode($result, true));
+        ($callback)(json_decode($result, true));
     }
 }
