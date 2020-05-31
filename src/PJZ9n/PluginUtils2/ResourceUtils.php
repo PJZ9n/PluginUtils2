@@ -43,7 +43,11 @@ class ResourceUtils
         }
         fclose($fp);
         $beforeCount = count($plugin->getConfig()->getAll(), COUNT_RECURSIVE);
-        $plugin->getConfig()->setDefaults(yaml_parse($configYaml));//replace
+        $parsedYaml = yaml_parse($configYaml);
+        if (!is_array($parsedYaml)) {
+            $parsedYaml = [];
+        }
+        $plugin->getConfig()->setDefaults($parsedYaml);//replace
         $afterCount = count($plugin->getConfig()->getAll(), COUNT_RECURSIVE);
         $plugin->saveConfig();
         return $afterCount - $beforeCount;
